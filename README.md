@@ -24,7 +24,7 @@ Since the Mfem-apps depends mostly on Mfem library, it involves downloading and 
     *  parmetis  
     *  suitesparse  
     *  libsuperlu-dist  
-You at least need git for this.  
+* #### You at least need git for this.  
 
         ```
         git clone https://github.com/samadritakarmakar/mfem-apps.git  
