@@ -26,10 +26,10 @@ Since the Mfem-apps depends mostly on Mfem library, it involves downloading and 
     *  libsuperlu-dist  
 * #### You at least need git for this.  
 
-        ```
+        
         git clone https://github.com/samadritakarmakar/mfem-apps.git  
         ./configureMfem.sh
-        ```  
+         
 
 
 
