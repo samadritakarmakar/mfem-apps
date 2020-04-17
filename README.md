@@ -3,7 +3,8 @@
 
 ## We have been able to implement the following models here till now.  
 * ### Linear Elasticity (serial execution)  
-Linear Elasticity code displacement outputs are similar to that of the 'ex2' in the mfem library. The change here is that it uses the tensor like representation for evaluation. Meaning, it uses the expresssion \sigma_{ij} = C_{ijkl}:\epsilon_{kl}.  
+Linear Elasticity code displacement outputs are similar to that of the 'ex2' in the mfem library. The change here is that it uses the tensor like representation for evaluation. Meaning, it uses the expresssion:  
+\sigma_{ij} = C_{ijkl}:\epsilon_{kl}.  
 In addition to displacements, an Inverse Distance Weighing Interpolation has been used to recover the stress values from the evaluated displacement vector.  
 To run this code, enter:  
 
