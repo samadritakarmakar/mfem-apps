@@ -29,7 +29,11 @@ Since the Mfem-apps depends mostly on Mfem library, it involves downloading and 
         
         git clone https://github.com/samadritakarmakar/mfem-apps.git  
         ./configureMfem.sh
-         
+Then go to the build directory of mfem-apps and type the following:  
 
-
+        cmake <path to source directory>
+        make -j2
+        
+You should be able to succesfully see the executables now built in the root of your build directory.  
+##### If you have face while compiling issues, please post in the issues page of this project.  
 
