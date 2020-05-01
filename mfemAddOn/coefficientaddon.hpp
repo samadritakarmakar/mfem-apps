@@ -17,8 +17,6 @@ public:
         delete [] mat;
     }
 protected:
-
-
 };
 }
 

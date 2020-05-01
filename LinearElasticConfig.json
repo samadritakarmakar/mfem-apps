@@ -1,0 +1,12 @@
+{
+"mesh":"SampleGmsh/Bar.msh",
+"order":2,
+"dimension":3,
+"maxMeshRefinement":5000,
+"dirichletArributes":[1],
+"neumannArributes":[2],
+"dirichletValues":[[0,0,0]],
+"neumannValues":[[0,0,-0.3333333333333333]],
+"elasticModulus":[200000],"nu":[0.3],
+"visualization":false
+}

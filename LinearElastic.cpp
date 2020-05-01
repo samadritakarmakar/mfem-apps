@@ -1,21 +1,8 @@
-//                                MFEM Example 2
-//
-// Compile with: make ex2
-//
-// Sample runs:  ex2 -m ../data/beam-tri.mesh
-//               ex2 -m ../data/beam-quad.mesh
-//               ex2 -m ../data/beam-tet.mesh
-//               ex2 -m ../data/beam-hex.mesh
-//               ex2 -m ../data/beam-wedge.mesh
-//               ex2 -m ../data/beam-quad.mesh -o 3 -sc
-//               ex2 -m ../data/beam-quad-nurbs.mesh
-//               ex2 -m ../data/beam-hex-nurbs.mesh
-//
 // Description:  This example code solves a simple linear elasticity problem
 //               describing a multi-material cantilever beam.
 //
 //               Specifically, we approximate the weak form of -div(sigma(u))=0
-//               where sigma(u)=lambda*div(u)*I+mu*(grad*u+u*grad) is the stress
+//               where sigma(u)=lambda*div(u)*I+mu*(grad*u+u*grad) is the stressess_tdof_list.Append(ess_tdof_list1);
 //               tensor corresponding to displacement field u, and lambda and mu
 //               are the material Lame constants. The boundary conditions are
 //               u=0 on the fixed part of the boundary with attribute 1, and
@@ -51,10 +38,32 @@ using namespace mfem;
 int main(int argc, char *argv[])
 {
    // 1. Parse command-line options.
-   const char *mesh_file = "../data/beam-tri.mesh";
+   const char *mesh_file = "/SampleGmsh/Bar.msh";
+   const char *configFileName ="LinearElasticConfig.json";
    int order = 2;
+   double maxMeshRefinement = 5000.;
+   std::vector<unsigned int>dirichletArributes(1);
+   dirichletArributes[0]=1;
+   std::vector<unsigned int>neumannArributes(1);
+   neumannArributes[0]=2;
+   std::vector<std::vector<double>>dirichletValues(1);
+   dirichletValues[0].push_back(0.0);
+   dirichletValues[0].push_back(0.0);
+   dirichletValues[0].push_back(0.0);
+   std::vector<std::vector<double>>neumannValues(1);
+   neumannValues[0].push_back(0.0);
+   neumannValues[0].push_back(0.0);
+   neumannValues[0].push_back(-4.0e3/(200.*60.));
+   std::vector<double> E (2);
+   std::vector<double> nu (2);
+   E[0] = 1000e3;
+   nu[0] = 0.3;
+   E[1] = 200e3;
+   nu[1] = 0.3;
+
    bool static_cond = false;
    bool visualization = 1;
+
 
    OptionsParser args(argc, argv);
    args.AddOption(&mesh_file, "-m", "--mesh",
@@ -66,6 +75,7 @@ int main(int argc, char *argv[])
    args.AddOption(&visualization, "-vis", "--visualization", "-no-vis",
                   "--no-visualization",
                   "Enable or disable GLVis visualization.");
+   args.AddOption(&configFileName, "-jc", "--json-config-file", "JSON based config file");
    args.Parse();
    if (!args.Good())
    {
@@ -73,17 +83,22 @@ int main(int argc, char *argv[])
       return 1;
    }
    args.PrintOptions(cout);
+   JsonRootParser configFile(&configFileName);
+   configFile.AddOption(&mesh_file, "mesh");
+   configFile.AddOption(&order, "order");
+   configFile.AddOption(&maxMeshRefinement, "maxMeshRefinement");
+   configFile.AddOption(&dirichletArributes, "dirichletArributes");
+   configFile.AddOption(&neumannArributes, "neumannArributes");
+   configFile.AddOption(&dirichletValues, "dirichletValues");
+   configFile.AddOption(&neumannValues, "neumannValues");
+   configFile.AddOption(&E, "elasticModulus");
+   configFile.AddOption(&nu, "nu");
+   std::cout<<"mesh ="<<mesh_file<<"\n";
 
    // 2. Read the mesh from the given mesh file. We can handle triangular,
    //    quadrilateral, tetrahedral or hexahedral elements with the same code.
    Mesh *mesh = new Mesh(mesh_file, 1, 1);
    int dim = mesh->Dimension();
-   std::vector<double> E (2);
-   std::vector<double> nu (2);
-   E[0] = 1000e3;
-   nu[0] = 0.3;
-   E[1] = 200e3;
-   nu[1] = 0.3;
 
    //************ADDED BY SAM!**********************************************
       //Mesh *mesh = new Mesh(mesh_file);
@@ -91,9 +106,9 @@ int main(int argc, char *argv[])
       cout<<"Space Dimension of mesh = "<<mesh->SpaceDimension();
       cout<<"Number of Elements ="<<mesh->GetNE()<<"\n";
       cout<<"Boundary Element Type ="<<mesh->GetBdrElementType(0)<<"\n";
-      cout<<"Main Element Type ="<<mesh->GetElementType(0)<<"\n";
-      cout<<"Number of Main Elements"<<mesh->GetNE()<<"\n";
-      cout<<"Number of Boundary Elements"<<mesh->GetNBE()<<"\n";
+      cout<<"Main Element Type = "<<mesh->GetElementType(0)<<"\n";
+      cout<<"Number of Main Elements = "<<mesh->GetNE()<<"\n";
+      cout<<"Number of Boundary Elements = "<<mesh->GetNBE()<<"\n";
       cout<<"Number of Attributes = "<<mesh->attributes.Max()<<"\n";
       cout<<"Number of Boundary Attributes = "<<mesh->bdr_attributes.Max()<<"\n";
 
@@ -147,7 +162,7 @@ int main(int argc, char *argv[])
    //    elements.
    {
       int ref_levels =
-         (int)floor(log(5000./mesh->GetNE())/log(2.)/dim);
+         (int)floor(log(maxMeshRefinement/mesh->GetNE())/log(2.)/dim);
       for (int l = 0; l < ref_levels; l++)
       {
          mesh->UniformRefinement();
@@ -178,10 +193,16 @@ int main(int argc, char *argv[])
    //    In this example, the boundary conditions are defined by marking only
    //    boundary attribute 1 from the mesh as essential and converting it to a
    //    list of true dofs.
-   Array<int> ess_tdof_list, ess_bdr(mesh->bdr_attributes.Max());
+   Array<int> ess_tdof_list, ess_bdr(mesh->bdr_attributes.Max()), ess_tdof_list0, ess_tdof_list1, ess_tdof_list2;
    ess_bdr = 0;
    ess_bdr[0] = 1;
-   fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list);
+   //fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list);
+   fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list0, 0);
+   fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list1, 1);
+   fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list2, 2);
+   ess_tdof_list.Append(ess_tdof_list0);
+   ess_tdof_list.Append(ess_tdof_list1);
+   ess_tdof_list.Append(ess_tdof_list2);
 
    // 7. Set up the linear form b(.) which corresponds to the right-hand side of
    //    the FEM linear system. In this case, b_i equals the boundary integral
@@ -199,7 +220,7 @@ int main(int argc, char *argv[])
    {
       Vector pull_force(mesh->bdr_attributes.Max());
       pull_force = 0.0;
-      pull_force(1) = 4.0e3/(200.*60.);-10./3.;-1.0e-2;//
+      pull_force(1) = -4.0e3/(200.*60.);-10./3.;-1.0e-2;//
       f.Set(dim-1, new PWConstCoefficient(pull_force));
    }
 
@@ -219,7 +240,7 @@ int main(int argc, char *argv[])
    //    Elastic Tensor coefficient C.
 
    PWMatrixCoefficient C (6, mesh->attributes.Max());
-   for (int i=0; i<E.size(); i++)
+   for (unsigned int i=0; i<E.size(); i++)
    {
        int attrib = mesh->attributes.Max()-E.size()+i;
        GetElasticityTensor(E[i],nu[i],C.mat[attrib]);

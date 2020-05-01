@@ -44,6 +44,9 @@ find_package(SuiteSparse REQUIRED)
 find_package(SuperLUDist)
 find_package(PETSc REQUIRED)
 
+#######################Mfem-app required packages#############################
+find_package(jsoncpp REQUIRED)
+
 set(INSTALLED_DIRS "/usr/include")
 set(PETSC_INCUDE_DIR "${INSTALLED_DIRS}/petsc/")
 include_directories(${HYPRE_INCLUDE_DIR})
@@ -56,7 +59,7 @@ include_directories(${PETSC_INCUDE_DIR})
 #file(GLOB_RECURSE HEADERS ${HEADER_FILES})
 
 
-set(DYNAMIC_LIBS_SERIAL HYPRE HYPRE_core HYPRE_FEI metis suitesparseconfig klu umfpack gomp)
+set(DYNAMIC_LIBS_SERIAL HYPRE HYPRE_core HYPRE_FEI metis suitesparseconfig klu umfpack gomp jsoncpp)
 set(DYNAMIC_LIBS_PARALLEL ${DYNAMIC_LIBS_SERIAL} parmetis petsc superlu_dist)
 
 set(MFEM_USE_MPI ON)
@@ -68,15 +71,18 @@ include_directories("${CMAKE_CURRENT_BINARY_DIR}/mfem/config")
 include_directories("mfem/")
 add_subdirectory("mfem/")
 #########Newly added libraries#############################
+include_directories("general//")
+add_subdirectory("general/")
 include_directories("SolidMechanics/")
 add_subdirectory("SolidMechanics/")
 include_directories("mfemAddOn/")
 add_subdirectory("mfemAddOn/")
 
+
 add_library(${PROJECT_NAME} mfem-apps.hpp)
 set_target_properties(${PROJECT_NAME} PROPERTIES LINKER_LANGUAGE CXX)
 
-set (mfemApps ${PROJECT_NAME} SolidMechanics mfemAddOn)
+set (mfemApps ${PROJECT_NAME} SolidMechanics mfemAddOn general)
 
 #set(DYNAMIC_WITHOUT_CMAKE HYPRE)
 #set(STATIC_LIBS "${CMAKE_SOURCE_DIR}/../${MFEM_BUILD_DIR}/libmfem.a")

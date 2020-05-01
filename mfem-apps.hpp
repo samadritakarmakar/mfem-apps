@@ -3,4 +3,5 @@
 #include "mfem.hpp"
 #include "mfemAddOn/mfemAddOn.hpp"
 #include "SolidMechanics/SolidMechanics.hpp"
+#include "general/general.hpp"
 #endif // MFEMAPPS_HPP
