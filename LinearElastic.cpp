@@ -102,8 +102,8 @@ int main(int argc, char *argv[])
 
    //************ADDED BY SAM!**********************************************
       //Mesh *mesh = new Mesh(mesh_file);
-      cout<<"Dimension of mesh = "<<mesh->Dimension();
-      cout<<"Space Dimension of mesh = "<<mesh->SpaceDimension();
+      cout<<"Dimension of mesh = "<<mesh->Dimension()<<"\n";
+      //cout<<"Space Dimension of mesh = "<<mesh->SpaceDimension();
       cout<<"Number of Elements ="<<mesh->GetNE()<<"\n";
       cout<<"Boundary Element Type ="<<mesh->GetBdrElementType(0)<<"\n";
       cout<<"Main Element Type = "<<mesh->GetElementType(0)<<"\n";
@@ -193,16 +193,30 @@ int main(int argc, char *argv[])
    //    In this example, the boundary conditions are defined by marking only
    //    boundary attribute 1 from the mesh as essential and converting it to a
    //    list of true dofs.
-   Array<int> ess_tdof_list, ess_bdr(mesh->bdr_attributes.Max()), ess_tdof_list0, ess_tdof_list1, ess_tdof_list2;
+   Array<int> ess_tdof_list, ess_bdr(mesh->bdr_attributes.Max());
    ess_bdr = 0;
-   ess_bdr[0] = 1;
-   //fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list);
-   fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list0, 0);
-   fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list1, 1);
-   fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list2, 2);
-   ess_tdof_list.Append(ess_tdof_list0);
-   ess_tdof_list.Append(ess_tdof_list1);
-   ess_tdof_list.Append(ess_tdof_list2);
+   if(dirichletArributes.size()<=mesh->bdr_attributes.Max())
+   {
+       for (unsigned int i = 0; i < dirichletArributes.size(); i++)
+       {
+           ess_bdr[dirichletArributes[i]-1] = 1;
+       }
+   }
+   fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list);
+   PWVectorCoefficient disp(dim, mesh->bdr_attributes.Max());
+   disp =0.;
+   if(dirichletArributes.size()<=mesh->bdr_attributes.Max())
+   {
+       for (unsigned int i = 0; i < dirichletArributes.size(); i++)
+       {
+           for (int j = 0; j < dim; j++)
+           {
+
+               disp[dirichletArributes[i]-1](j)=dirichletValues[i][j];
+           }
+       }
+   }
+
 
    // 7. Set up the linear form b(.) which corresponds to the right-hand side of
    //    the FEM linear system. In this case, b_i equals the boundary integral
@@ -212,17 +226,21 @@ int main(int argc, char *argv[])
    //    which is a vector of Coefficient objects. The fact that f is non-zero
    //    on boundary attribute 2 is indicated by the use of piece-wise constants
    //    coefficient for its last component.
-   VectorArrayCoefficient f(dim);
-   for (int i = 0; i < dim-1; i++)
+
+   PWVectorCoefficient f(dim, mesh->bdr_attributes.Max());
+   f =0.;
+   if(neumannArributes.size()<mesh->bdr_attributes.Max())
    {
-      f.Set(i, new ConstantCoefficient(0.0));
+       for (unsigned int i = 0; i < neumannArributes.size(); i++)
+       {
+           for (int j = 0; j < dim; j++)
+           {
+
+               f[neumannArributes[i]-1](j)=neumannValues[i][j];
+           }
+       }
    }
-   {
-      Vector pull_force(mesh->bdr_attributes.Max());
-      pull_force = 0.0;
-      pull_force(1) = -4.0e3/(200.*60.);-10./3.;-1.0e-2;//
-      f.Set(dim-1, new PWConstCoefficient(pull_force));
-   }
+
 
    LinearForm *b = new LinearForm(fespace);
    b->AddBoundaryIntegrator(new VectorBoundaryLFIntegrator(f));
@@ -240,10 +258,11 @@ int main(int argc, char *argv[])
    //    Elastic Tensor coefficient C.
 
    PWMatrixCoefficient C (6, mesh->attributes.Max());
+   C=0.;
    for (unsigned int i=0; i<E.size(); i++)
    {
        int attrib = mesh->attributes.Max()-E.size()+i;
-       GetElasticityTensor(E[i],nu[i],C.mat[attrib]);
+       GetElasticityTensor(E[i],nu[i],C[attrib]);
    }
 
    BilinearForm *a = new BilinearForm(fespace);
@@ -264,12 +283,6 @@ int main(int argc, char *argv[])
    a->FormLinearSystem(ess_tdof_list, x, *b, A, X, B);
    cout << "done." << endl;
 
-   //*****************Delete later************************
-   cout<<"Size of fespsace VSize = "<<fespace->GetVSize()<<"\n";
-   cout<<"Size of fespsace NDofs = "<<fespace->GetNDofs()<<"\n";
-   cout<<"Size of fespsace Dim = "<<fespace->GetVDim()<<"\n";
-   cout<<"Size of a = "<<a->Height()<<"\n";
-   //*******************************************************
    cout << "Size of linear system: " << A.Height() << endl;
 
 #ifndef MFEM_USE_SUITESPARSE
@@ -286,6 +299,7 @@ int main(int argc, char *argv[])
 #endif
 
    // 12. Recover the solution as a finite element grid function.
+   x.ProjectBdrCoefficient(disp, ess_bdr);
    a->RecoverFEMSolution(X, *b, x);
 
    // 13. For non-NURBS meshes, make the mesh curved based on the finite element
@@ -340,37 +354,6 @@ int main(int argc, char *argv[])
       sol_ofs.precision(8);
       x.Save(sol_ofs);
    }
-
-   //**********Delete Later******************************
-   /*for (int vdof=0; vdof<Stress.Size(); vdof++)
-   {
-       std::cout<<Stress(vdof)<<"\t\t";
-       if((vdof+1)%8==0)
-       {
-           std::cout<<"\n";
-       }
-   }
-   cout<<"\n\n";
-
-   for (int vdof=0; vdof<x.Size(); vdof++)
-   {
-       std::cout<<x(vdof)<<"\t\t";
-       if((vdof+1)%8==0)
-       {
-           std::cout<<"\n";
-       }
-   }
-   cout<<"\n\n";
-   for (int vdof=0; vdof<x.Size(); vdof++)
-   {
-       std::cout<<x(vdof)<<"\t\t";
-       if((vdof+1)%3==0)
-       {
-           std::cout<<"\n";
-       }
-   }
-*/
-   //****************************************************
 
    // 15. Send the above data by socket to a GLVis server. Use the "n" and "b"
    //     keys in GLVis to visualize the displacements.

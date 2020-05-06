@@ -123,11 +123,11 @@ private:
     void GetData(const Json::Value &obj_local, const char **classNameElement, const char* key)
     {
 
-        std::cout<<"Key :"<<key<<" detected as char string\n";
+        //std::cout<<"Key :"<<key<<" detected as char string\n";
         std::string buffer(obj_local.asCString());
         charString.push_back(buffer);
         *classNameElement = charString[charString.size()-1].c_str();
-        std::cout<<"CString = "<<*classNameElement<<"\n";
+        //std::cout<<"CString = "<<*classNameElement<<"\n";
     }
 
     void GetData(const Json::Value &obj_local, std::string *classNameElement, const char* key)
