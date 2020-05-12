@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Linear Elasticity Problem Definition</title>
+  </head>
+  <body>
+    <script type="text/javascript" src="own_js/code.js">
+    </script>
+    <div class="fullbody">
+      <div class="">
+        <h1>Welcome to Linear Elasticity Problem Definition.</h1>
+        <h2>Lets start by defining the Problem Parameters.</h2>
+      </div>
+      <div class="">
+        <form class="" action="problemsubmit" method="post">
+          <label for="order">Order: </label>
+          <input type="number"  id="order" name="order" min="1" max="3" value="2">
+          <br>
+          <label for="maxMeshRefinement">Maximum Mesh Refinement:</label>
+          <input type="number" id="maxMeshRefinement" name="maxMeshRefinement" min="5000" value="5000">
+          <br><br>
+          <label for="dirichletArributes">Displacement Arributes:</label>
+          <input type="number" id="dirichletArributes" name="dirichletArributes" min ="1" value="">
+          <br>
+          <button type="button" name="addDirichAttrib" onclick="addDirich()">Add Attribute</button>
+          <button type="button" id="removeDirichAttrib" onclick="removeDirich()">Remove Attribute</button>
+          <br>
+          <div class="dirichletVals" id="dirichletVal">
+            <label for="xdiric">Ux:</label>
+            <input type="number" id="xdiric" name="xdiric" step="0.1" value="">
+            <label for="ydiric">Uy:</label>
+            <input type="number" id="ydiric" name="ydiric" step="0.1" value="">
+            <label for="zdiric">Uz:</label>
+            <input type="number" id="zdiric" name="zdiric" step="0.1" value="">
+          </div>
+          <br>
+          <label for="neumannArributes">Force per Unit Area Arributes:</label>
+          <input type="number" id="neumannArributes" name="neumannArributes" min ="1" value="">
+          <br>
+          <button type="button" name="addNeumAttrib" onclick="addNeum()">Add Attribute</button>
+          <button type="button" id="removeNeumAttrib" onclick="removeNeum()">Remove Attribute</button>
+          <br>
+          <div class="neumannVals" id="neumannVal">
+            <label for="xneum">Fx:</label>
+            <input type="number" id="xneum" name="xneum" step="0.1" value="">
+            <label for="yneum">Fy:</label>
+            <input type="number" id="yneum" name="yneum" step="0.1" value="">
+            <label for="zneum">Fz:</label>
+            <input type="number" id="zneum" name="zneum" step="0.1" value="">
+          </div>
+          <br>
+          <label for="elasticModulus">Elastic Modulus: </label>
+          <input type="number" id="elasticModulus" name="elasticModulus" value="">
+          <br>
+          <label for="nu">Poisson's ratio:</label>
+          <input type="number" id="nu" name="nu" min=0.0 max=1.0 step="0.1" value="">
+          <br>
+          <input type="submit" name="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

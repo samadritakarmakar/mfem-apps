@@ -82,7 +82,7 @@ int main(int argc, char *argv[])
       args.PrintUsage(cout);
       return 1;
    }
-   args.PrintOptions(cout);
+   //args.PrintOptions(cout);
    JsonRootParser configFile(&configFileName);
    configFile.AddOption(&mesh_file, "mesh");
    configFile.AddOption(&order, "order");
@@ -93,7 +93,7 @@ int main(int argc, char *argv[])
    configFile.AddOption(&neumannValues, "neumannValues");
    configFile.AddOption(&E, "elasticModulus");
    configFile.AddOption(&nu, "nu");
-   std::cout<<"mesh ="<<mesh_file<<"\n";
+   //std::cout<<"mesh ="<<mesh_file<<"\n";
 
    // 2. Read the mesh from the given mesh file. We can handle triangular,
    //    quadrilateral, tetrahedral or hexahedral elements with the same code.
@@ -117,7 +117,10 @@ int main(int argc, char *argv[])
       {
           int sizeEnd = elmntType== 0 ? mesh->attributes.Max(): mesh->bdr_attributes.Max();
           int *attribType = new int [sizeEnd+1];
-          std::fill(attribType, attribType+sizeEnd, 0);
+          for (int attribNos = 0 ; attribNos <= sizeEnd; attribNos++)
+          {
+              attribType[attribNos] =0;
+          }
           int NoOfElmnts=elmntType==0 ? mesh->GetNE() : mesh->GetNBE();
           for (int i=0; i<NoOfElmnts; i++)
           {
@@ -280,7 +283,9 @@ int main(int argc, char *argv[])
 
    SparseMatrix A;
    Vector B, X;
-   a->FormLinearSystem(ess_tdof_list, x, *b, A, X, B);
+   const int copy_interior =1;
+   x.ProjectBdrCoefficient(disp, ess_bdr);
+   a->FormLinearSystem(ess_tdof_list, x, *b, A, X, B, copy_interior);
    cout << "done." << endl;
 
    cout << "Size of linear system: " << A.Height() << endl;
@@ -299,7 +304,6 @@ int main(int argc, char *argv[])
 #endif
 
    // 12. Recover the solution as a finite element grid function.
-   x.ProjectBdrCoefficient(disp, ess_bdr);
    a->RecoverFEMSolution(X, *b, x);
 
    // 13. For non-NURBS meshes, make the mesh curved based on the finite element
@@ -330,10 +334,10 @@ int main(int argc, char *argv[])
    CalcStressSolids Stress(fespace, x, &C, fespace_strss);
    cout << "Size of stress vector: " << Stress.Size() << endl;
 
-   VisItDataCollection visit_dc("LinearElastic", mesh);
+   /*VisItDataCollection visit_dc("LinearElastic", mesh);
    visit_dc.RegisterField("Displacement",&x);
    visit_dc.RegisterField("Stress", &Stress);
-   visit_dc.Save();
+   visit_dc.Save();*/
 
    ParaViewDataCollection paraview_dc("PVLinearElastic", mesh);
    paraview_dc.RegisterField("Displacement",&x);
@@ -343,7 +347,7 @@ int main(int argc, char *argv[])
    // 14. Save the displaced mesh and the inverted solution (which gives the
    //     backward displacements to the original grid). This output can be
    //     viewed later using GLVis: "glvis -m displaced.mesh -g sol.gf".
-   {
+   /*{
       GridFunction *nodes = mesh->GetNodes();
       *nodes += x;
       x *= -1;
@@ -364,7 +368,7 @@ int main(int argc, char *argv[])
       socketstream sol_sock(vishost, visport);
       sol_sock.precision(8);
       sol_sock << "solution\n" << *mesh << x << flush;
-   }
+   }*/
 
    // 16. Free the used memory.
    delete a;

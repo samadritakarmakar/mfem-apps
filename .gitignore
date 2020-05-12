@@ -1,3 +1,7 @@
 build
 mfem
 CMakeLists.txt.user
+Node_js/.tern-project
+Node_js/PVLinearElastic
+Node_js/PVLinearElastic.zip
+Node_js/meshFile/meshFile.msh

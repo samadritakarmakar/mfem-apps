@@ -151,7 +151,7 @@ void CalcStressSolids::GetInverseDistance(const DenseMatrix& PointMat, const Fin
             {
                 Dist(dim_cnt) = PointMat(dim_cnt, dof_cnt) - trans_vctr(dim_cnt);
             }
-            InvDist[ipnt](dof_cnt)=1./(std::pow(Dist.Norml2(),12.));
+            InvDist[ipnt](dof_cnt)=1./(std::pow(Dist.Norml2(),14.));
         }
     }
 }

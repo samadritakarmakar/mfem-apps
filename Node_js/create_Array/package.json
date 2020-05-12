@@ -1,0 +1,17 @@
+{
+  "name": "create_array",
+  "version": "1.0.0",
+  "description": "creates 1D and 2D arrays",
+  "main": "create_Array.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "create",
+    "1D",
+    "2D",
+    "arrays"
+  ],
+  "author": "Samadrita Karmakar (samadritakarmakar@gmail.com)",
+  "license": "MIT"
+}

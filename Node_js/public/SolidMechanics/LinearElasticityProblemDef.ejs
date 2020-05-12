@@ -1,0 +1,100 @@
+<!DOCTYPE html>
+<html lang="en" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>Linear Elasticity Problem Definition</title>
+    <link rel="stylesheet" href="css/master.css">
+  </head>
+  <body>
+    <script type="text/javascript" src="own_js/code.js">
+    </script>
+    <div class="fullbody">
+      <div class="">
+        <h1>Welcome to Linear Elasticity Problem Definition.</h1>
+        <h2>Lets start by defining the Problem Parameters.</h2>
+      </div>
+      <div class="block">
+        <form class="" action="LinearElasticity/problemsubmit" method="post">
+          <div class="">
+            <label class="col50pcLeft" for="order">Order: </label>
+            <input class="col5pcRight" type="number"  id="order" name="order" min="1" max="3" value="2">
+          </div>
+          <br><br>
+          <div class="">
+            <label class="col50pcLeft" for="maxMeshRefinement">Maximum Mesh Refinement:</label>
+            <input class="col10pcRight" type="number" id="maxMeshRefinement" name="maxMeshRefinement" min="5000" value="5000">
+          </div>
+          <br><br>
+          <div class="">
+            <label class="col50pcLeft" for="dirichletArributes">Displacement Arributes:</label>
+            <input class="col5pcRight" type="number" id="dirichletArributes" name="dirichletArributes" min ="1" value="">
+          </div>
+          <br><br>
+          <div class="">
+            <button class="" type="button" id="addDirichAttrib" onclick="addDirich()">Add Attribute</button>
+            <button class="" type="col20pcRight" id="removeDirichAttrib" onclick="removeDirich()">Remove Attribute</button>
+          </div>
+          <br>
+          <div class="dirichletVals" id="dirichletVal">
+            <div class="">
+              <div class="blockInline">
+                <label class="" for="xdiric">Ux:</label>
+                <input type="number" id="xdiric" name="xdiric" step="1e-16" value="">
+              </div>
+              <div class="blockInline">
+                <label for="ydiric">Uy:</label>
+                <input type="number" id="ydiric" name="ydiric" step="1e-16" value="">
+              </div>
+              <div class="blockInline">
+                <label for="zdiric">Uz:</label>
+                <input type="number" id="zdiric" name="zdiric" step="1e-16" value="">
+              </div>
+            </div>
+            <br>
+          </div>
+
+          <div class="">
+            <label class="col50pcLeft" for="neumannArributes">Force per Unit Area Arributes:</label>
+            <input class="col5pcRight" type="number" id="neumannArributes" name="neumannArributes" min ="1" value="">
+          </div>
+          <br><br>
+          <div class="">
+            <button type="button" id="addNeumAttrib" onclick="addNeum()">Add Attribute</button>
+            <button type="button" id="removeNeumAttrib" onclick="removeNeum()">Remove Attribute</button>
+          </div>
+
+          <br>
+          <div class="neumannVals" id="neumannVal">
+            <div class="">
+              <div class="blockInline">
+                <label for="xneum">Fx:</label>
+                <input type="number" id="xneum" name="xneum" step="1e-16" value="">
+              </div>
+              <div class="blockInline">
+                <label for="yneum">Fy:</label>
+                <input type="number" id="yneum" name="yneum" step="1e-16" value="">
+              </div>
+              <div class="blockInline">
+                <label for="zneum">Fz:</label>
+                <input type="number" id="zneum" name="zneum" step="1e-16" value="">
+              </div>
+            </div>
+            <br>
+          </div>
+
+          <div class="">
+            <label class="col50pcLeft" for="elasticModulus">Elastic Modulus: </label>
+            <input class="col20pcLeft" type="number" id="elasticModulus" name="elasticModulus" value="">
+          </div>
+          <br><br>
+          <div class="">
+            <label class="col50pcLeft" for="nu">Poisson's ratio:</label>
+            <input class="col5pcRight" type="number" id="nu" name="nu" min=0.0 max=1.0 step="0.1" value="">
+          </div>
+          <br><br>
+          <input type="submit" name="submit" value="Submit">
+        </form>
+      </div>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,35 @@
+{
+  "name": "kloudfea",
+  "version": "1.0.0",
+  "description": "open source cloud based Finite Element software.",
+  "main": "app.js",
+  "dependencies": {
+    "body-parser": "^1.19.0",
+    "create_array": "file:create_Array",
+    "ejs": "^3.1.2",
+    "express": "^4.17.1",
+    "multer": "^1.4.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "node app.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/samadritakarmakar/mfem-apps.git"
+  },
+  "keywords": [
+    "cloud",
+    "fea",
+    "finite",
+    "element",
+    "free_software",
+    "finite_element"
+  ],
+  "author": "Samadrita Karmakar (samadritakarmakar@gmail.com)",
+  "license": "AGPL-3.0-or-later",
+  "bugs": {
+    "url": "https://github.com/samadritakarmakar/mfem-apps/issues"
+  },
+  "homepage": "https://github.com/samadritakarmakar/mfem-apps#readme"
+}

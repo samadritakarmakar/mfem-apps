@@ -1,0 +1,1 @@
+{"mesh":"/home/sam/Programs/mfem/mfem-apps/Node_js/meshFile/meshFile.msh","order":2,"maxMeshRefinement":5000,"dirichletArributes":[1],"dirichletValues":[[0,0,0]],"neumannArributes":[2],"neumannValues":[[0,0,-0.333333]],"elasticModulus":200000,"nu":0.3,"visualization":false}
