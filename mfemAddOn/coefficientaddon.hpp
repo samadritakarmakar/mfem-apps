@@ -28,6 +28,12 @@ public:
             vec[i] = value;
         }
     }
+
+    unsigned int GetMaxAtrributes()
+    {
+        return max_attributes;
+    }
+
 protected:
     Vector *vec;
     unsigned int max_attributes;
@@ -54,6 +60,11 @@ public:
         {
             mat[i] = value;
         }
+    }
+
+    unsigned int GetMaxAtrributes()
+    {
+        return max_attributes;
     }
 protected:
     DenseMatrix *mat;

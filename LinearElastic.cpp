@@ -50,6 +50,15 @@ int main(int argc, char *argv[])
    dirichletValues[0].push_back(0.0);
    dirichletValues[0].push_back(0.0);
    dirichletValues[0].push_back(0.0);
+   std::vector<std::vector<unsigned int>>activeDirichletValues(1);
+   activeDirichletValues[0].push_back(1);
+   activeDirichletValues[0].push_back(1);
+   activeDirichletValues[0].push_back(1);
+
+   std::vector<unsigned int>materialAttirbutes(2);
+   materialAttirbutes[0]=4;
+   materialAttirbutes[1]=5;
+
    std::vector<std::vector<double>>neumannValues(1);
    neumannValues[0].push_back(0.0);
    neumannValues[0].push_back(0.0);
@@ -88,9 +97,11 @@ int main(int argc, char *argv[])
    configFile.AddOption(&order, "order");
    configFile.AddOption(&maxMeshRefinement, "maxMeshRefinement");
    configFile.AddOption(&dirichletArributes, "dirichletArributes");
+   configFile.AddOption(&activeDirichletValues, "activeDirichletValues");
    configFile.AddOption(&neumannArributes, "neumannArributes");
    configFile.AddOption(&dirichletValues, "dirichletValues");
    configFile.AddOption(&neumannValues, "neumannValues");
+   configFile.AddOption(&materialAttirbutes, "materialAttirbutes");
    configFile.AddOption(&E, "elasticModulus");
    configFile.AddOption(&nu, "nu");
    //std::cout<<"mesh ="<<mesh_file<<"\n";
@@ -143,15 +154,6 @@ int main(int argc, char *argv[])
       }
    //**********************************************************************************************
 
-
-   /*if (mesh->attributes.Max() < 2 || mesh->bdr_attributes.Max() < 2)
-   {
-      cerr << "\nInput mesh should have at least two materials and "
-           << "two boundary attributes! (See schematic in ex2.cpp)\n"
-           << endl;
-      return 3;
-   }*/
-
    // 3. Select the order of the finite element discretization space. For NURBS
    //    meshes, we increase the order by degree elevation.
    if (mesh->NURBSext)
@@ -197,15 +199,42 @@ int main(int argc, char *argv[])
    //    boundary attribute 1 from the mesh as essential and converting it to a
    //    list of true dofs.
    Array<int> ess_tdof_list, ess_bdr(mesh->bdr_attributes.Max());
+   std::vector<std::vector<Array<int>>> ess_tdof_componentWise(mesh->bdr_attributes.Max());
+   std::vector<Array<int>> ess_bdr_temp(dirichletArributes.size());
+
+   for (unsigned int i=0; i<ess_bdr_temp.size(); i++)
+   {
+       ess_bdr_temp[i] = Array<int>(mesh->bdr_attributes.Max());
+       ess_bdr_temp[i] = 0;
+   }
+
+
    ess_bdr = 0;
    if(dirichletArributes.size()<=mesh->bdr_attributes.Max())
    {
        for (unsigned int i = 0; i < dirichletArributes.size(); i++)
        {
            ess_bdr[dirichletArributes[i]-1] = 1;
+           ess_bdr_temp[i][dirichletArributes[i]-1] = 1;
+           ess_bdr[dirichletArributes[i]-1] = ess_bdr_temp[i][dirichletArributes[i]-1];
        }
    }
-   fespace->GetEssentialTrueDofs(ess_bdr, ess_tdof_list);
+   if (activeDirichletValues.size()<=mesh->bdr_attributes.Max())
+   {
+       for(unsigned int i=0; i<activeDirichletValues.size(); i++)
+       {
+           ess_tdof_componentWise[i] = std::vector<Array<int>>(activeDirichletValues[i].size());
+           for(unsigned int component=0; component<ess_tdof_componentWise[i].size(); component++)
+           {
+               if(activeDirichletValues[i][component])
+               {
+                   fespace->GetEssentialTrueDofs(ess_bdr_temp[i], ess_tdof_componentWise[i][component], component);
+                   ess_tdof_list.Append(ess_tdof_componentWise[i][component]);
+               }
+           }
+       }
+   }
+
    PWVectorCoefficient disp(dim, mesh->bdr_attributes.Max());
    disp =0.;
    if(dirichletArributes.size()<=mesh->bdr_attributes.Max())
@@ -262,10 +291,10 @@ int main(int argc, char *argv[])
 
    PWMatrixCoefficient C (6, mesh->attributes.Max());
    C=0.;
-   for (unsigned int i=0; i<E.size(); i++)
+
+   for (unsigned int i =0; i< E.size(); i++)
    {
-       int attrib = mesh->attributes.Max()-E.size()+i;
-       GetElasticityTensor(E[i],nu[i],C[attrib]);
+       GetElasticityTensor(E[i],nu[i],C[materialAttirbutes[i]-1]);
    }
 
    BilinearForm *a = new BilinearForm(fespace);
@@ -285,6 +314,10 @@ int main(int argc, char *argv[])
    Vector B, X;
    const int copy_interior =1;
    x.ProjectBdrCoefficient(disp, ess_bdr);
+   /*for(unsigned int i=0; i<ess_bdr_temp.size(); i++)
+   {
+       x.ProjectBdrCoefficient(disp, ess_bdr_temp[i]);
+   }*/
    a->FormLinearSystem(ess_tdof_list, x, *b, A, X, B, copy_interior);
    cout << "done." << endl;
 
@@ -334,41 +367,10 @@ int main(int argc, char *argv[])
    CalcStressSolids Stress(fespace, x, &C, fespace_strss);
    cout << "Size of stress vector: " << Stress.Size() << endl;
 
-   /*VisItDataCollection visit_dc("LinearElastic", mesh);
-   visit_dc.RegisterField("Displacement",&x);
-   visit_dc.RegisterField("Stress", &Stress);
-   visit_dc.Save();*/
-
    ParaViewDataCollection paraview_dc("PVLinearElastic", mesh);
    paraview_dc.RegisterField("Displacement",&x);
    paraview_dc.RegisterField("Stress", &Stress);
    paraview_dc.Save();
-
-   // 14. Save the displaced mesh and the inverted solution (which gives the
-   //     backward displacements to the original grid). This output can be
-   //     viewed later using GLVis: "glvis -m displaced.mesh -g sol.gf".
-   /*{
-      GridFunction *nodes = mesh->GetNodes();
-      *nodes += x;
-      x *= -1;
-      ofstream mesh_ofs("displaced.mesh");
-      mesh_ofs.precision(8);
-      mesh->Print(mesh_ofs);
-      ofstream sol_ofs("sol.gf");
-      sol_ofs.precision(8);
-      x.Save(sol_ofs);
-   }
-
-   // 15. Send the above data by socket to a GLVis server. Use the "n" and "b"
-   //     keys in GLVis to visualize the displacements.
-   if (visualization)
-   {
-      char vishost[] = "localhost";
-      int  visport   = 19916;
-      socketstream sol_sock(vishost, visport);
-      sol_sock.precision(8);
-      sol_sock << "solution\n" << *mesh << x << flush;
-   }*/
 
    // 16. Free the used memory.
    delete a;

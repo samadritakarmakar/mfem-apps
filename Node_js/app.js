@@ -113,10 +113,12 @@ app.post('/SolidMechanics/LinearElasticity/problemsubmit',  urlEncodedParser, (r
     maxMeshRefinement: parseInt(req.body.maxMeshRefinement),
     dirichletArributes: saveObjectsToArray1D(req.body.dirichletArributes),
     dirichletValues: saveObjectsToArray2D(req.body.xdiric, req.body.ydiric, req.body.zdiric),
+    activeDirichletValues: saveObjectsToArray2D(req.body.xActivateDirich, req.body.yActivateDirich, req.body.zActivateDirich),
     neumannArributes: saveObjectsToArray1D(req.body.neumannArributes),
     neumannValues: saveObjectsToArray2D(req.body.xneum, req.body.yneum, req.body.zneum),
-    elasticModulus: stringToExponent(req.body.elasticModulus),
-    nu: parseFloat(req.body.nu),
+    materialAttirbutes: saveObjectsToArray1D(req.body.materialAttirbutes),
+    elasticModulus: saveObjectsToArray1D(req.body.elasticModulus),
+    nu: saveObjectsToArray1D(req.body.nu),
     visualization:false
   }
   console.log(`problemDef:\n`);

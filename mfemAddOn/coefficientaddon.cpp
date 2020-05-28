@@ -18,7 +18,7 @@ void PWVectorCoefficient::Eval(Vector &V, ElementTransformation &T, const Integr
 
 
 PWMatrixCoefficient::PWMatrixCoefficient(int dim_square, int max_Attributes):
-    MatrixCoefficient(dim_square)
+    MatrixCoefficient(dim_square), max_attributes(max_Attributes)
 {
     mat = new DenseMatrix[max_Attributes];
     for (int i=0; i<max_Attributes; i++)

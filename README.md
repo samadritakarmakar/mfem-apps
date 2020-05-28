@@ -1,9 +1,14 @@
-# Mfem-apps are a set of applications built using the Mfem library.  
-##### This library uses the Mfem library but its developers are in no way endorsed by the original developer of the Mfem library, i.e. LLNL.  
+# Kloud-Fea aims to provide an open source cloud based platform for Finite Element Analysis.
+## Kloud-Fea Platform has different components.
+* ### For the solver, we use Mfem (https://mfem.org/) as the finite element library developed by LLNL, USA.
+* ### For the creating the server, we use Node.js (https://nodejs.org)
+* ### For the front-end, HTML, CSS and JavaScript is used.
+
+  
 
 ## We have been able to implement the following models here till now.  
 * ### Linear Elasticity (serial execution)
-Linear Elasticity code displacement outputs are similar to that of the 'ex2' in the mfem library. The change here is that it uses the tensor like representation for evaluation. Meaning, it uses the expresssion:  
+Linear Elasticity code displacement outputs are similar to that of the 'ex2' in the mfem library. The change here is that it uses the tensor like representation for evaluation. Meaning, it uses the expression:  
 
         \sigma_{ij} = C_{ijkl}:\epsilon_{kl}.  
         
@@ -36,5 +41,5 @@ Then go to the build directory of mfem-apps and type the following:
         cmake <path to source directory>
         make -j2
 
-You should be able to succesfully see the executables now built in the root of your build directory.  
+You should be able to successfully see the executables now built in the root of your build directory.  
 ##### If you face issues while compiling, please post in the issues page of this project.  

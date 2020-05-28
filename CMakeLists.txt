@@ -94,52 +94,50 @@ set (mfemApps ${PROJECT_NAME} SolidMechanics mfemAddOn general)
 
 
 
-#set(Array src/array/*.c)
-#file(GLOB_RECURSE SRC "src/*/*.c")
-set(EXE1 exe1)
-add_executable(${EXE1} ex1.cpp) #${HEADERS})
-target_link_libraries(${EXE1} mfem ${MPI_LIBRARIES} ${DYNAMIC_LIBS_PARALLEL})
+#set(EXE1 exe1)
+#add_executable(${EXE1} ex1.cpp) #${HEADERS})
+#target_link_libraries(${EXE1} mfem ${MPI_LIBRARIES} ${DYNAMIC_LIBS_PARALLEL})
 
-if(MPI_COMPILE_FLAGS)
-  set_target_properties(${EXE1} PROPERTIES
-    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
-endif()
+#if(MPI_COMPILE_FLAGS)
+#  set_target_properties(${EXE1} PROPERTIES
+#    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
+#endif()
 
-if(MPI_LINK_FLAGS)
-  set_target_properties(${EXE1} PROPERTIES
-    LINK_FLAGS "${MPI_LINK_FLAGS}")
-endif()
+#if(MPI_LINK_FLAGS)
+#  set_target_properties(${EXE1} PROPERTIES
+#    LINK_FLAGS "${MPI_LINK_FLAGS}")
+#endif()
 
 
-set(EXE1p exe1p)
-add_executable(${EXE1p} ex1p.cpp) #${HEADERS})
-target_link_libraries(${EXE1p} ${MPI_LIBRARIES} mfem ${DYNAMIC_LIBS_PARALLEL})
+#set(EXE1p exe1p)
+#add_executable(${EXE1p} ex1p.cpp) #${HEADERS})
+#target_link_libraries(${EXE1p} ${MPI_LIBRARIES} mfem ${DYNAMIC_LIBS_PARALLEL})
 
-if(MPI_COMPILE_FLAGS)
-  set_target_properties(${EXE1p} PROPERTIES
-    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
-endif()
+#if(MPI_COMPILE_FLAGS)
+#  set_target_properties(${EXE1p} PROPERTIES
+#    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
+#endif()
 
-if(MPI_LINK_FLAGS)
-  set_target_properties(${EXE1p} PROPERTIES
-    LINK_FLAGS "${MPI_LINK_FLAGS}")
-endif()
+#if(MPI_LINK_FLAGS)
+#  set_target_properties(${EXE1p} PROPERTIES
+#    LINK_FLAGS "${MPI_LINK_FLAGS}")
+#endif()
 
 
 
-set(EXE2 exe2)
-add_executable(${EXE2} ex2.cpp) #${HEADERS})
-target_link_libraries(${EXE2} ${MPI_LIBRARIES} mfem ${DYNAMIC_LIBS_PARALLEL})
+#set(EXE2 exe2)
+#add_executable(${EXE2} ex2.cpp) #${HEADERS})
+#target_link_libraries(${EXE2} ${MPI_LIBRARIES} mfem ${DYNAMIC_LIBS_PARALLEL})
 
-if(MPI_COMPILE_FLAGS)
-  set_target_properties(${EXE2} PROPERTIES
-    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
-endif()
+#if(MPI_COMPILE_FLAGS)
+#  set_target_properties(${EXE2} PROPERTIES
+#    COMPILE_FLAGS "${MPI_COMPILE_FLAGS}")
+#endif()
 
-if(MPI_LINK_FLAGS)
-  set_target_properties(${EXE2} PROPERTIES
-    LINK_FLAGS "${MPI_LINK_FLAGS}")
-endif()
+#if(MPI_LINK_FLAGS)
+#  set_target_properties(${EXE2} PROPERTIES
+#    LINK_FLAGS "${MPI_LINK_FLAGS}")
+#endif()
 
 set(L_ELSTC LinearElastic)
 add_executable(${L_ELSTC} LinearElastic.cpp) #${HEADERS})

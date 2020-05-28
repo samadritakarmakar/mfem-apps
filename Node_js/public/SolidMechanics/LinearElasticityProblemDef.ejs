@@ -30,7 +30,7 @@
             <input class="col5pcRight" type="number" id="dirichletArributes" name="dirichletArributes" min ="1" value="">
           </div>
           <br><br>
-          <div class="">
+          <div class=".block">
             <button class="" type="button" id="addDirichAttrib" onclick="addDirich()">Add Attribute</button>
             <button class="" type="col20pcRight" id="removeDirichAttrib" onclick="removeDirich()">Remove Attribute</button>
           </div>
@@ -39,15 +39,46 @@
             <div class="">
               <div class="blockInline">
                 <label class="" for="xdiric">Ux:</label>
-                <input type="number" id="xdiric" name="xdiric" step="1e-16" value="">
+                <input type="number" id="xdiric" name="xdiric" step="1e-16" value="0">
               </div>
               <div class="blockInline">
                 <label for="ydiric">Uy:</label>
-                <input type="number" id="ydiric" name="ydiric" step="1e-16" value="">
+                <input type="number" id="ydiric" name="ydiric" step="1e-16" value="0">
               </div>
               <div class="blockInline">
                 <label for="zdiric">Uz:</label>
-                <input type="number" id="zdiric" name="zdiric" step="1e-16" value="">
+                <input type="number" id="zdiric" name="zdiric" step="1e-16" value="0">
+              </div>
+              <br>
+              <div class="block">
+                <div class="blockInline">
+                  <br>
+                  <label for="xActivateDirich">Active x:</label>
+                  <!-- <input class="col20pc" type="number" id="xActivateDirich" name="xActivateDirich" value="1" max="1" min="0"> -->
+                  <select class="col20pc" name="xActivateDirich" id="xActivateDirich">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                  </select>
+                </div>
+                <div class="blockInline">
+                  <label for="y">Active y:</label>
+                  <!-- <input class="col20pc" type="number" id="yActivateDirich" name="yActivateDirich" value="1" max="1" min="0"> -->
+                  <select class="col20pc" name="yActivateDirich" id="yActivateDirich">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                  </select>
+                </div>
+                <div class="blockInline">
+                  <label for="z">Active z:</label>
+                  <!-- <input class="col20pc" type="number" id="zActivateDirich" name="zActivateDirich" value="1" max="1" min="0"> -->
+                  <select class="col20pc" name="zActivateDirich" id="zActivateDirich">
+                    <option value="1">Yes</option>
+                    <option value="0">No</option>
+                  </select>
+                </div>
+                <!-- <div class="block">
+                  <p>"1"- Activates the dimension, "0"- Deactivates it.</p>
+                </div> -->
               </div>
             </div>
             <br>
@@ -68,30 +99,45 @@
             <div class="">
               <div class="blockInline">
                 <label for="xneum">Fx:</label>
-                <input type="number" id="xneum" name="xneum" step="1e-16" value="">
+                <input type="number" id="xneum" name="xneum" step="1e-16" value="0">
               </div>
               <div class="blockInline">
                 <label for="yneum">Fy:</label>
-                <input type="number" id="yneum" name="yneum" step="1e-16" value="">
+                <input type="number" id="yneum" name="yneum" step="1e-16" value="0">
               </div>
               <div class="blockInline">
                 <label for="zneum">Fz:</label>
-                <input type="number" id="zneum" name="zneum" step="1e-16" value="">
+                <input type="number" id="zneum" name="zneum" step="1e-16" value="0">
               </div>
             </div>
             <br>
           </div>
-
-          <div class="">
-            <label class="col50pcLeft" for="elasticModulus">Elastic Modulus: </label>
-            <input class="col20pcLeft" type="number" id="elasticModulus" name="elasticModulus" value="">
+          <br>
+          <div class="" >
+            <div class="materialAttirb" id="materialAttirbs">
+              <label for="materialAttirbutes">Material Attributes:</label>
+              <input class="col5pc" type="number" name="materialAttirbutes" value="">
+            </div>
           </div>
-          <br><br>
-          <div class="">
-            <label class="col50pcLeft" for="nu">Poisson's ratio:</label>
-            <input class="col5pcRight" type="number" id="nu" name="nu" min=0.0 max=1.0 step="0.1" value="">
-          </div>
-          <br><br>
+            <br>
+            <div class="">
+              <button type="button" id="addMaterialAttrib" onclick="addMaterial()">Add Attribute</button>
+              <button type="button" id="removeMaterialAttrib" onclick="removeMaterial()">Remove Attribute</button>
+            </div>
+            <div class="materialProp" id="materialProps">
+              <br>
+              <div class=".block">
+                <label class="col50pcLeft" for="elasticModulus">Elastic Modulus: </label>
+                <input class="col20pcRight" type="number" id="elasticModulus" name="elasticModulus" step="0.01" value="">
+              </div>
+              <br><br>
+              <div class=".block">
+                <label class="col50pcLeft" for="nu">Poisson's ratio:</label>
+                <input class="col10pcRight" type="number" id="nu" name="nu" min=0.0 max=1.0 step="0.01" value="">
+              </div>
+              <br>
+            </div>
+          <br>
           <input type="submit" name="submit" value="Submit">
         </form>
       </div>
