@@ -1,8 +1,8 @@
 # Kloud-Fea aims to provide an open source cloud based platform for Finite Element Analysis.
 ## Kloud-Fea Platform has different components.
 * ### For the solver, we use Mfem (https://mfem.org/) as the finite element library developed by LLNL, USA.
-* ### For the creating the server, we use Node.js (https://nodejs.org)
-* ### For the front-end, HTML, CSS and JavaScript is used.
+* ### For the creating the server, we use Node.js (https://nodejs.org).
+* ### For the front-end, HTML, CSS and JavaScript are used.
 
   
 

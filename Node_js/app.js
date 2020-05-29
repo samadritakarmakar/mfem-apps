@@ -32,8 +32,9 @@ var MeshPath ={path: meshDir+'/'+meshFileName + '.msh'};
 var problemConfig = __dirname + '/problemConfig';
 var ProblemConfigPath = {path: problemConfig+'/problemConfig.JSON'};
 var outputFileName = 'PVLinearElastic.zip';
-//var executablePath = __dirname + '/.././LinearElastic -jc '
+//*****************EDIT HERE*************************
 var executablePath = '/home/sam/Programs/mfem/mfem-apps/build/Debug'+ '/LinearElastic -jc ';
+//***************************************************
 var app = express();
 app.set('view engine', 'ejs');
 app.set('views', viewDir);
@@ -57,26 +58,6 @@ app.get('/SolidMechanics/*', (req, res) => {
   console.log(`Requested url is ${req.url}`);
   res.sendFile(__dirname+'/public'+req.url);
 });
-
-/*app.get('/contact', (req, res) => {
-app.set('views', publicDir);
-RequestRespond ={request: req, respond: res, dir: publicDir, filename: req.url, fs: fs};
-TemplateRender(RequestRespond);
-});
-app.get('/profile/:name', (req, res) => {
-  app.set('views', viewDir);
-  RequestRespond ={request: req, respond: res, dir: viewDir, filename: req.url, fs: fs};
-  TemplateRender(RequestRespond);
-});
-
-
-app.post('/contact', urlEncodedParser, (req, res) => {
-  app.set('views', publicDir);
-  console.log(req.body);
-  RequestRespond ={request: req, respond: res, dir: publicDir, filename: 'contactsuccess', fs: fs};
-  TemplateRender(RequestRespond);
-});*/
-
 
 
 // SET STORAGE
